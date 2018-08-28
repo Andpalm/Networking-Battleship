@@ -60,7 +60,7 @@ namespace GameServer
         public void DisconnectClient(ClientHandler client)
         {
             clients.Remove(client);
-            Console.WriteLine($"User: { client.UserName} left.");
+            Console.WriteLine($"User: {client.UserName} left.");
             Broadcast(client, $"User: {client.UserName} left.");
         }
     }
