@@ -10,7 +10,23 @@ namespace GameClient
     {
         static void Main(string[] args)
         {
+                string inputUsername = getInput("Username: ");
+                string inputPassword = getInput("Password: ");
+                validateLogin(inputUsername, inputPassword);
+        }
 
+        static string getInput(string text)
+        {
+            Console.Write(text);
+
+            return Console.ReadLine();
+        }
+
+        static void validateLogin(string username, string password)
+        {
+            // send to server
+
+            // get result and print to console
         }
     }
 }
