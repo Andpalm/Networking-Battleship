@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameClient
 {
-    class Program
+    class GameMenu
     {
-        static void Main(string[] args)
-        {
-
-        }
     }
 }
