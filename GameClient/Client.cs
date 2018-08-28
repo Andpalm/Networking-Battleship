@@ -38,7 +38,6 @@ namespace GameClient
                     NetworkStream networkStream = client.GetStream();
                     message = new BinaryReader(networkStream).ReadString();
                     Console.WriteLine($"Client text: {message}");
-                    
                 }
             }
             catch (Exception ex)

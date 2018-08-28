@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameClient
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-                string inputUsername = getInput("Username: ");
-                string inputPassword = getInput("Password: ");
-                validateLogin(inputUsername, inputPassword);
+            var client = new Client();
+            var thread = new Thread(client.Start);
+            thread.Start();
+            thread.Join();
+
+            validateLogin(getInput("Enter text: "));
         }
 
         static string getInput(string text)
@@ -22,7 +27,7 @@ namespace GameClient
             return Console.ReadLine();
         }
 
-        static void validateLogin(string username, string password)
+        static void validateLogin(string text)
         {
             // send to server
 

@@ -12,8 +12,6 @@ namespace Networking_server
 {
     class Program
     {
-
-
         static void Main(string[] args)
         {
             Server myServer = new Server();
