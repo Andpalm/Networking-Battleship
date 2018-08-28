@@ -12,13 +12,16 @@ namespace GameClient
     class Client
     {
         private TcpClient client;
+        public string UserName { get; set; }
+
 
         public void Start()
         {
             client = new TcpClient("10.20.38.92", 5000);
 
+
             var listenerThread = new Thread(Send);
-            listenerThread.Start("Admin");
+            listenerThread.Start();
 
             var senderThread = new Thread(Listen);
             senderThread.Start();
@@ -37,7 +40,9 @@ namespace GameClient
                 {
                     NetworkStream networkStream = client.GetStream();
                     message = new BinaryReader(networkStream).ReadString();
-                    Console.WriteLine($"Client text: {message}");
+
+                    // Parse json and display text...
+                    Console.WriteLine($"Text: {message}");
                 }
             }
             catch (Exception ex)
@@ -46,7 +51,7 @@ namespace GameClient
             }
         }
 
-        public void Send(object text)
+        public void Send()
         {
             string message = "";
 
@@ -56,7 +61,11 @@ namespace GameClient
                 while (!message.Equals("quit"))
                 {
                     NetworkStream networkStream = client.GetStream();
-                    message = (string)text;
+
+
+                    Console.Write("Type: ");
+                    message = Console.ReadLine();
+
                     var binaryWriter = new BinaryWriter(networkStream);
                     binaryWriter.Write(message);
                     binaryWriter.Flush();

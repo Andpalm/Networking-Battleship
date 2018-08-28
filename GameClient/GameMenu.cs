@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace GameClient
 {
-    class GameMenu
+    public class GameMenu
     {
+
     }
 }
