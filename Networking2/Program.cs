@@ -16,8 +16,11 @@ namespace Networking2
         {
             new Thread(Server).Start();       
             Thread.Sleep(500);
-            Client();
+            for (int i = 0; i < 10; i++)
+            {
+                Client();
 
+            }
             Console.ReadKey();
         }
 
