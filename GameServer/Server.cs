@@ -13,7 +13,7 @@ namespace GameServer
     public class Server
     {
         List<ClientHandler> clients = new List<ClientHandler>();
-
+        List<string> messages = new List<string>();
         public void Run()
         {
             var listener = new TcpListener(IPAddress.Any, 5000);
@@ -48,6 +48,13 @@ namespace GameServer
 
         public void Broadcast(ClientHandler client, string message)
         {
+            messages.Add(message);
+
+            lock (messages)
+            {
+
+            }
+
             foreach (var item in clients)
             {
                 NetworkStream networkStream = item.client.GetStream();
@@ -60,8 +67,8 @@ namespace GameServer
         public void DisconnectClient(ClientHandler client)
         {
             clients.Remove(client);
-            Console.WriteLine($"User: {client.UserName} left.");
-            Broadcast(client, $"User: {client.UserName} left.");
+            Console.WriteLine($"User: x left.");
+            Broadcast(client, $"User: x left.");
         }
     }
 }

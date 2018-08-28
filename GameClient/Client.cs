@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Protocol;
 
 namespace GameClient
 {
@@ -17,8 +19,10 @@ namespace GameClient
 
         public void Start()
         {
-            client = new TcpClient("localhost", 5000);
+            Console.Write("Enter name: ");
+            UserName = Console.ReadLine();
 
+            client = new TcpClient("10.20.38.92", 5000);
 
             var listenerThread = new Thread(Send);
             listenerThread.Start();
@@ -41,8 +45,9 @@ namespace GameClient
                     NetworkStream networkStream = client.GetStream();
                     message = new BinaryReader(networkStream).ReadString();
 
+                    Message messageInformation = JsonConvert.DeserializeObject<Message>(message);
                     // Parse json and display text...
-                    Console.WriteLine($"Text: {message}");
+                    Console.WriteLine($"{messageInformation.UserName}: {messageInformation.Text}");
                 }
             }
             catch (Exception ex)
@@ -63,11 +68,16 @@ namespace GameClient
                     NetworkStream networkStream = client.GetStream();
 
 
-                    Console.Write("Type: ");
+                    Console.Write("Input: ");
+
                     message = Console.ReadLine();
 
+                    var messageInformation = new Message() { UserName = UserName, Text = message };
+
+                    var jsonProtocol = JsonConvert.SerializeObject(messageInformation);
+
                     var binaryWriter = new BinaryWriter(networkStream);
-                    binaryWriter.Write(message);
+                    binaryWriter.Write(jsonProtocol);
                     binaryWriter.Flush();
                 }
 

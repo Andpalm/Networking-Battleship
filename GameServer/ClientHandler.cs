@@ -12,7 +12,6 @@ namespace GameServer
     {
         public TcpClient client;
         private Server server;
-        public string UserName { get; set; }
 
         public ClientHandler(TcpClient client, Server server)
         {
