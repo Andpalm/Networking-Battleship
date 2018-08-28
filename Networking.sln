@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClient", "GameClient\Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{DB30648E-9E42-46D1-921D-73EC054B6D38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{AE960926-5824-48F1-B273-2C93363ADA7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DB30648E-9E42-46D1-921D-73EC054B6D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB30648E-9E42-46D1-921D-73EC054B6D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB30648E-9E42-46D1-921D-73EC054B6D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE960926-5824-48F1-B273-2C93363ADA7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE960926-5824-48F1-B273-2C93363ADA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE960926-5824-48F1-B273-2C93363ADA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE960926-5824-48F1-B273-2C93363ADA7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
