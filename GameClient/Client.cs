@@ -17,7 +17,7 @@ namespace GameClient
 
         public void Start()
         {
-            client = new TcpClient("localhost", 5000);
+            client = new TcpClient("10.20.38.92", 5000);
 
 
             var listenerThread = new Thread(Send);
