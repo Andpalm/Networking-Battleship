@@ -22,8 +22,8 @@ namespace GameClient
         {
             Console.Write("Enter name: ");
             UserName = Console.ReadLine();
-
-            client = new TcpClient("10.20.38.92", 5000);
+            Startup();
+            client = new TcpClient("localhost", 5000);
 
             var listenerThread = new Thread(Send);
             listenerThread.Start();
@@ -51,17 +51,19 @@ namespace GameClient
                     switch (ClientAction)
                     {
                         case AllActions.Startup:
+                            Startup();
                             break;
                         case AllActions.Signup:
                             SignUp();
                             break;
                         case AllActions.Login:
+                            LogIn();
                             break;
                         default:
                             break;
                     }
                     // Parse json and display text...
-                    Console.WriteLine($"{messageInformation.UserName}: {messageInformation.Text}");
+                    //Console.WriteLine($"{messageInformation.UserName}: {messageInformation.Text}");
                 }
             }
             catch (Exception ex)
@@ -70,9 +72,20 @@ namespace GameClient
             }
         }
 
+        private void LogIn()
+        {
+            Console.WriteLine($"{UserName}: Write your password:");
+        }
+
+        private void Startup()
+        {
+            Console.WriteLine("Signup [S]");
+            Console.WriteLine("Login [L]");
+        }
+
         private void SignUp()
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"{UserName}: Enter the password you want to use:");
         }
 
         public void Send()
@@ -87,7 +100,7 @@ namespace GameClient
                     NetworkStream networkStream = client.GetStream();
 
 
-                    Console.Write("Input: ");
+                    //Console.Write("Input: ");
 
                     message = Console.ReadLine();
 

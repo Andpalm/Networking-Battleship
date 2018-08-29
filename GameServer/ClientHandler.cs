@@ -33,7 +33,8 @@ namespace GameServer
                     Message messageInformation = JsonConvert.DeserializeObject<Message>(messageJson);
                     message = messageInformation.Text;
 
-                    server.Broadcast(this, message);
+                    //server.Broadcast(this, message);
+                    server.ResponseToClient(this, messageInformation);
                     Console.WriteLine(message);
                 }
 
