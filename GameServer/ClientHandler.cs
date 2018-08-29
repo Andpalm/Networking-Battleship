@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Protocol;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,7 +29,10 @@ namespace GameServer
                 while (!message.Equals("quit"))
                 {
                     NetworkStream networkStream = client.GetStream();
-                    message = new BinaryReader(networkStream).ReadString();
+                    string messageJson = new BinaryReader(networkStream).ReadString();
+                    Message messageInformation = JsonConvert.DeserializeObject<Message>(messageJson);
+                    message = messageInformation.Text;
+
                     server.Broadcast(this, message);
                     Console.WriteLine(message);
                 }

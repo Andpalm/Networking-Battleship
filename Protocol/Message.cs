@@ -8,6 +8,7 @@ namespace Protocol
 {
     public enum AllActions
     {
+        Startup,
         Signup,
         Login,
 

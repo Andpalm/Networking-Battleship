@@ -15,6 +15,7 @@ namespace GameClient
     {
         private TcpClient client;
         public string UserName { get; set; }
+        public AllActions ClientAction { get; set; }
 
 
         public void Start()
@@ -46,6 +47,19 @@ namespace GameClient
                     message = new BinaryReader(networkStream).ReadString();
 
                     Message messageInformation = JsonConvert.DeserializeObject<Message>(message);
+                    ClientAction = messageInformation.Action;
+                    switch (ClientAction)
+                    {
+                        case AllActions.Startup:
+                            break;
+                        case AllActions.Signup:
+                            SignUp();
+                            break;
+                        case AllActions.Login:
+                            break;
+                        default:
+                            break;
+                    }
                     // Parse json and display text...
                     Console.WriteLine($"{messageInformation.UserName}: {messageInformation.Text}");
                 }
@@ -54,6 +68,11 @@ namespace GameClient
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void SignUp()
+        {
+            throw new NotImplementedException();
         }
 
         public void Send()
@@ -72,7 +91,7 @@ namespace GameClient
 
                     message = Console.ReadLine();
 
-                    var messageInformation = new Message() { UserName = UserName, Text = message };
+                    var messageInformation = new Message() { UserName = UserName, Text = message, Action = ClientAction };
 
                     var jsonProtocol = JsonConvert.SerializeObject(messageInformation);
 

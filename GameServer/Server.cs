@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Protocol;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace GameServer
     {
         List<ClientHandler> clients = new List<ClientHandler>();
         List<string> messages = new List<string>();
+        public AllActions ServerAction { get; set; }
         public void Run()
         {
             var listener = new TcpListener(IPAddress.Any, 5000);
@@ -61,6 +64,21 @@ namespace GameServer
                 var binaryWriter = new BinaryWriter(networkStream);
                 binaryWriter.Write(message);
                 binaryWriter.Flush();
+            }
+        }
+
+        public void ResponseToClient(ClientHandler client, Message message)
+        {
+            switch (message.Action)
+            {
+                case AllActions.Startup:
+                    break;
+                case AllActions.Signup:
+                    break;
+                case AllActions.Login:
+                    break;
+                default:
+                    break;
             }
         }
 
