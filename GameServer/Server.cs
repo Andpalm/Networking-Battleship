@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GameServer.Models.Data;
+using Newtonsoft.Json;
 using Protocol;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,23 @@ namespace GameServer
 
         private void LogIn(ClientHandler client, Message message)
         {
-            message.Action = AllActions.Startup;
+            using (var db = new HippoContext())
+            {
+                var users = db.User
+                    .Where(userinfo => userinfo.UserName == message.UserName && userinfo.Password == message.Text)
+                    .ToList();
+
+                if (users.Count == 1)
+                {
+                    message.Text = "You signed in";
+                    message.Action = AllActions.Startgame;
+                }
+                else
+                {
+                    message.Text = "User dont exist or the password is wrong";
+                    message.Action = AllActions.Startup;
+                }
+            }
 
             NetworkStream networkStream = client.client.GetStream();
             var binaryWriter = new BinaryWriter(networkStream);
@@ -98,7 +115,26 @@ namespace GameServer
 
         private void Signup(ClientHandler client, Message message)
         {
-            message.Action = AllActions.Startup;
+            using (var db = new HippoContext())
+            {
+                var user = new User() { UserName = message.UserName, Password = message.Text };
+                var users = db.User
+                    .Where(username => username.UserName == message.UserName)
+                    .ToList();
+
+                if (users.Count == 0 )
+                {
+                    db.User.Add(user);
+                    db.SaveChanges();
+                    message.Text = "User created";
+                    message.Action = AllActions.Startgame;
+                }
+                else
+                {
+                    message.Text = "User allready exists";
+                    message.Action = AllActions.Startup;
+                }
+            }
 
             NetworkStream networkStream = client.client.GetStream();
             var binaryWriter = new BinaryWriter(networkStream);

@@ -13,9 +13,11 @@ namespace GameServer.Models.Data
     {
         public DbSet<User> User { get; set; }
 
-        public HippoContext() : base("Server=.;Database=Hippo;Trusted_Connection=True;")
+        // 
+        //public HippoContext() : base("Server=.;Database=Hippo;Trusted_Connection=True;")
+        public HippoContext() : base("Data Source=.;Initial Catalog=Hippo;Integrated Security=True")
         {
-           
+
         }
     }
 

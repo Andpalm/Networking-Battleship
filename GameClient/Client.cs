@@ -22,7 +22,7 @@ namespace GameClient
         {
             Console.Write("Enter name: ");
             UserName = Console.ReadLine();
-            Startup();
+            Startup("");
             client = new TcpClient("localhost", 5000);
 
             var listenerThread = new Thread(Send);
@@ -51,13 +51,16 @@ namespace GameClient
                     switch (ClientAction)
                     {
                         case AllActions.Startup:
-                            Startup();
+                            Startup(messageInformation.Text);
                             break;
                         case AllActions.Signup:
                             SignUp();
                             break;
                         case AllActions.Login:
                             LogIn();
+                            break;
+                        case AllActions.Startgame:
+                            StartGame(messageInformation.Text);
                             break;
                         default:
                             break;
@@ -72,13 +75,20 @@ namespace GameClient
             }
         }
 
+        private void StartGame(string message)
+        {
+            Console.WriteLine(message);
+            Console.WriteLine("Game Starts");
+        }
+
         private void LogIn()
         {
             Console.WriteLine($"{UserName}: Write your password:");
         }
 
-        private void Startup()
+        private void Startup(string message)
         {
+            Console.WriteLine(message);
             Console.WriteLine("Signup [S]");
             Console.WriteLine("Login [L]");
         }

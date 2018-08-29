@@ -11,7 +11,7 @@ namespace Protocol
         Startup,
         Signup,
         Login,
-
+        Startgame
     }
 
     public class Message
