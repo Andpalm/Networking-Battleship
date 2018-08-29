@@ -1,0 +1,18 @@
+use master
+GO
+
+drop database Hippo
+GO
+
+create database Hippo
+GO
+
+use Hippo
+GO
+
+create table User
+(
+	ID int identity PRIMARY KEY,
+	UserName varchar(max) not null,
+	Password varchar(max) not null,
+)
