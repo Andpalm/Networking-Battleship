@@ -11,8 +11,10 @@ namespace Protocol
         Startup,
         Signup,
         Login,
-        Startgame
+        Startgame,
+        InGame,
     }
+
 
     public class Message
     {
@@ -20,5 +22,7 @@ namespace Protocol
         public AllActions Action { get; set; }
         public string Text { get; set; }
         public string UserName { get; set; }
+        public bool Playing { get; set; }
+        public int SticksLeft { get; set; }
     }
 }

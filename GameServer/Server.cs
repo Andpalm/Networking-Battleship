@@ -15,6 +15,7 @@ namespace GameServer
 {
     public class Server
     {
+        List<ClientHandler> loggedinUsers = new List<ClientHandler>();
         List<ClientHandler> clients = new List<ClientHandler>();
         List<string> messages = new List<string>();
         public AllActions ServerAction { get; set; }
@@ -30,7 +31,11 @@ namespace GameServer
                 while (true)
                 {
                     TcpClient client = listener.AcceptTcpClient();
-                    var clientHandler = new ClientHandler(client, this);
+                    NetworkStream networkStream = client.GetStream();
+                    var message = new BinaryReader(networkStream).ReadString();
+                    Message messageInformation = JsonConvert.DeserializeObject<Message>(message);
+
+                    var clientHandler = new ClientHandler(client, this, messageInformation.UserName);
                     clients.Add(clientHandler);
 
                     var clientThread = new Thread(clientHandler.Run);
@@ -98,6 +103,16 @@ namespace GameServer
                 {
                     message.Text = "You signed in";
                     message.Action = AllActions.Startgame;
+                    loggedinUsers.Add(client);
+
+                    if (loggedinUsers.Count == 2)
+                    {
+                        StartGame(loggedinUsers);
+                    }
+                    else
+                    {
+                        message.Text += " : Waiting for another user...";
+                    }
                 }
                 else
                 {
@@ -113,6 +128,29 @@ namespace GameServer
             binaryWriter.Flush();
         }
 
+        private void StartGame(List<ClientHandler> loggedinUsers)
+        {
+            string gametext1 = $"{loggedinUsers[0].userName} it´s your turn. Choose how many sticks(1-3) you want to remove from the pile. The one who takes the last stick loses.";
+            string gametext2 = $"It´s {loggedinUsers[0].userName}:s turn. The one who takes the last stick loses.";
+
+            Message message1 = new Message() { UserName = loggedinUsers[0].userName, Action = AllActions.InGame, Playing = true, Text = gametext1, SticksLeft = 21 };
+            Message message2 = new Message() { UserName = loggedinUsers[1].userName, Action = AllActions.InGame, Playing = false, Text = gametext2, SticksLeft = 21 };
+            string messagetosend1 = JsonConvert.SerializeObject(message1);
+            string messagetosend2 = JsonConvert.SerializeObject(message2);
+
+
+            NetworkStream networkStream = loggedinUsers[0].client.GetStream();
+            var binaryWriter = new BinaryWriter(networkStream);
+            binaryWriter.Write(messagetosend1);
+            binaryWriter.Flush();
+
+            NetworkStream networkStream1 = loggedinUsers[1].client.GetStream();
+            var binaryWriter1 = new BinaryWriter(networkStream1);
+            binaryWriter1.Write(messagetosend2);
+            binaryWriter1.Flush();
+
+        }
+
         private void Signup(ClientHandler client, Message message)
         {
             using (var db = new HippoContext())
@@ -122,12 +160,21 @@ namespace GameServer
                     .Where(username => username.UserName == message.UserName)
                     .ToList();
 
-                if (users.Count == 0 )
+                if (users.Count == 0)
                 {
                     db.User.Add(user);
                     db.SaveChanges();
                     message.Text = "User created";
                     message.Action = AllActions.Startgame;
+                    loggedinUsers.Add(client);
+                    if (loggedinUsers.Count == 2)
+                    {
+                        StartGame(loggedinUsers);
+                    }
+                    else
+                    {
+                        message.Text += " : Waiting for another user...";
+                    }
                 }
                 else
                 {
@@ -142,6 +189,7 @@ namespace GameServer
             binaryWriter.Write(jsonMessage);
             binaryWriter.Flush();
         }
+
 
         private void Startup(ClientHandler client, Message message)
         {
@@ -163,6 +211,7 @@ namespace GameServer
 
         public void DisconnectClient(ClientHandler client)
         {
+            loggedinUsers.Remove(client);
             clients.Remove(client);
             Console.WriteLine($"User: x left.");
             Broadcast(client, $"User: x left.");

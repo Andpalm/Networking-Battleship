@@ -16,6 +16,7 @@ namespace GameClient
         private TcpClient client;
         public string UserName { get; set; }
         public AllActions ClientAction { get; set; }
+        public Message Protocol { get; set; } = new Message();
 
 
         public void Start()
@@ -46,12 +47,12 @@ namespace GameClient
                     NetworkStream networkStream = client.GetStream();
                     message = new BinaryReader(networkStream).ReadString();
 
-                    Message messageInformation = JsonConvert.DeserializeObject<Message>(message);
-                    ClientAction = messageInformation.Action;
+                    Protocol = JsonConvert.DeserializeObject<Message>(message);
+                    ClientAction = Protocol.Action;
                     switch (ClientAction)
                     {
                         case AllActions.Startup:
-                            Startup(messageInformation.Text);
+                            Startup(Protocol.Text);
                             break;
                         case AllActions.Signup:
                             SignUp();
@@ -60,7 +61,10 @@ namespace GameClient
                             LogIn();
                             break;
                         case AllActions.Startgame:
-                            StartGame(messageInformation.Text);
+                            StartGame(Protocol.Text);
+                            break;
+                        case AllActions.InGame:
+                            InGame(Protocol.Text);
                             break;
                         default:
                             break;
@@ -73,6 +77,11 @@ namespace GameClient
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void InGame(string message)
+        {
+            Console.WriteLine(message);
         }
 
         private void StartGame(string message)
@@ -114,9 +123,11 @@ namespace GameClient
 
                     message = Console.ReadLine();
 
-                    var messageInformation = new Message() { UserName = UserName, Text = message, Action = ClientAction };
+                    Protocol.UserName = UserName;
+                    Protocol.Text = message;
+                    Protocol.Action = ClientAction;
 
-                    var jsonProtocol = JsonConvert.SerializeObject(messageInformation);
+                    var jsonProtocol = JsonConvert.SerializeObject(Protocol);
 
                     var binaryWriter = new BinaryWriter(networkStream);
                     binaryWriter.Write(jsonProtocol);
