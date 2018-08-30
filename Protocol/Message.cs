@@ -13,6 +13,7 @@ namespace Protocol
         Login,
         Startgame,
         InGame,
+        GameOver
     }
 
 

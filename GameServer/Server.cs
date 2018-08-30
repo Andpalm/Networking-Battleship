@@ -86,9 +86,72 @@ namespace GameServer
                 case AllActions.Login:
                     LogIn(client, message);
                     break;
+                case AllActions.InGame:
+                    InGame(loggedinUsers, message);
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void InGame(List<ClientHandler> loggedinUsers, Message message)
+        {
+            int playerindex;
+            int notplayingIndex;
+
+            if (loggedinUsers[0].userName == message.UserName && loggedinUsers[0].playing)
+            {
+                playerindex = 0;
+                notplayingIndex = 1;
+            }
+            else
+            {
+                playerindex = 1;
+                notplayingIndex = 0;
+            }
+
+            if (loggedinUsers[playerindex].userName == message.UserName)
+            {
+                if (message.Text == "1" || message.Text == "2" || message.Text == "3" )
+                {
+                    message.SticksLeft -= int.Parse(message.Text);
+
+                    if (message.SticksLeft < 1)
+                    {
+                        message.Text = $"{message.UserName} picked the last stick and lost! Congratulations {loggedinUsers[notplayingIndex].userName}!";
+                        message.Action = AllActions.GameOver;
+                        string messageJson = JsonConvert.SerializeObject(message);
+
+                        foreach (var item in loggedinUsers)
+                        {
+                            NetworkStream networkStream = item.client.GetStream();
+                            var binaryWriter = new BinaryWriter(networkStream);
+                            binaryWriter.Write(messageJson);
+                            binaryWriter.Flush();
+                        }
+                    }
+                    else
+                    {
+                        loggedinUsers[playerindex].playing = false;
+                        loggedinUsers[notplayingIndex].playing = true;
+
+                        message.Text = $"{message.SticksLeft} sticks left! It´s {loggedinUsers[notplayingIndex].userName}:s turn.";
+                        string messageJson = JsonConvert.SerializeObject(message);
+                        foreach (var item in loggedinUsers)
+                        {
+                            NetworkStream networkStream = item.client.GetStream();
+                            var binaryWriter = new BinaryWriter(networkStream);
+                            binaryWriter.Write(messageJson);
+                            binaryWriter.Flush();
+                        }
+                    }
+                }
+                else
+                {
+
+                }
+            }
+
         }
 
         private void LogIn(ClientHandler client, Message message)
@@ -133,8 +196,11 @@ namespace GameServer
             string gametext1 = $"{loggedinUsers[0].userName} it´s your turn. Choose how many sticks(1-3) you want to remove from the pile. The one who takes the last stick loses.";
             string gametext2 = $"It´s {loggedinUsers[0].userName}:s turn. The one who takes the last stick loses.";
 
-            Message message1 = new Message() { UserName = loggedinUsers[0].userName, Action = AllActions.InGame, Playing = true, Text = gametext1, SticksLeft = 21 };
-            Message message2 = new Message() { UserName = loggedinUsers[1].userName, Action = AllActions.InGame, Playing = false, Text = gametext2, SticksLeft = 21 };
+            loggedinUsers[0].playing = true;
+            loggedinUsers[1].playing = false;
+
+            Message message1 = new Message() { UserName = loggedinUsers[0].userName, Action = AllActions.InGame, Text = gametext1, SticksLeft = 21 };
+            Message message2 = new Message() { UserName = loggedinUsers[1].userName, Action = AllActions.InGame, Text = gametext2, SticksLeft = 21 };
             string messagetosend1 = JsonConvert.SerializeObject(message1);
             string messagetosend2 = JsonConvert.SerializeObject(message2);
 
