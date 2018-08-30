@@ -66,6 +66,9 @@ namespace GameClient
                         case AllActions.InGame:
                             InGame(Protocol.Text);
                             break;
+                        case AllActions.GameOver:
+                            Console.WriteLine(Protocol.Text);
+                            break;
                         default:
                             break;
                     }

@@ -15,12 +15,14 @@ namespace GameServer
         public TcpClient client;
         private Server server;
         public string userName;
+        public bool playing;
 
         public ClientHandler(TcpClient client, Server server, string userName)
         {
             this.client = client;
             this.server = server;
             this.userName = userName;
+            playing = false;
         }
 
         public void Run()
