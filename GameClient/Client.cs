@@ -24,7 +24,7 @@ namespace GameClient
             Console.Write("Enter name: ");
             UserName = Console.ReadLine();
             Startup("");
-            client = new TcpClient("localhost", 5000);
+            client = new TcpClient("10.20.38.155", 5000);
 
             var listenerThread = new Thread(Send);
             listenerThread.Start();

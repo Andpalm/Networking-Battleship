@@ -10,9 +10,9 @@ GO
 use Hippo
 GO
 
-create table User
+create table [User]
 (
 	ID int identity PRIMARY KEY,
 	UserName varchar(max) not null,
-	Password varchar(max) not null,
+	[Password] varchar(max) not null,
 )
